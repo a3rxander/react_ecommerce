@@ -127,3 +127,8 @@
     @apply font-sans;
     }
 }
+
+@theme 
+{
+    --font-montserrat: "Montserrat Alternates", sans-serif;
+}
