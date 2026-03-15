@@ -1,154 +1,11 @@
 
-interface Product {
-    id: number;
-    name: string;
-    price: number;
-    originalPrice?: number;
-    rating: number;
-    reviews: number;
-    image: string;
-    category: string;
-    badge?: string;
-    inStock: boolean;
-}
+ import type {Product} from '@/mocks/products.mock'
 
-export const ProductGrid = () => {
-    const products: Product[] = [
-        {
-            id: 1,
-            name: "Wireless Bluetooth Headphones",
-            price: 89.99,
-            originalPrice: 129.99,
-            rating: 4.5,
-            reviews: 234,
-            image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
-            category: "Electronics",
-            badge: "30% OFF",
-            inStock: true
-        },
-        {
-            id: 2,
-            name: "Smart Watch Series 5",
-            price: 299.99,
-            rating: 4.8,
-            reviews: 567,
-            image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500",
-            category: "Electronics",
-            badge: "Best Seller",
-            inStock: true
-        },
-        {
-            id: 3,
-            name: "Premium Running Shoes",
-            price: 124.99,
-            originalPrice: 159.99,
-            rating: 4.6,
-            reviews: 189,
-            image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
-            category: "Sports",
-            badge: "20% OFF",
-            inStock: true
-        },
-        {
-            id: 4,
-            name: "4K Ultra HD Camera",
-            price: 549.99,
-            rating: 4.7,
-            reviews: 423,
-            image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500",
-            category: "Electronics",
-            inStock: true
-        },
-        {
-            id: 5,
-            name: "Designer Backpack",
-            price: 79.99,
-            rating: 4.4,
-            reviews: 156,
-            image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500",
-            category: "Fashion",
-            badge: "New Arrival",
-            inStock: true
-        },
-        {
-            id: 6,
-            name: "Mechanical Gaming Keyboard",
-            price: 159.99,
-            originalPrice: 199.99,
-            rating: 4.9,
-            reviews: 892,
-            image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=500",
-            category: "Electronics",
-            badge: "Top Rated",
-            inStock: true
-        },
-        {
-            id: 7,
-            name: "Yoga Mat Premium",
-            price: 34.99,
-            rating: 4.3,
-            reviews: 278,
-            image: "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500",
-            category: "Sports",
-            inStock: false
-        },
-        {
-            id: 8,
-            name: "Coffee Maker Deluxe",
-            price: 129.99,
-            rating: 4.5,
-            reviews: 345,
-            image: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=500",
-            category: "Home",
-            badge: "Popular",
-            inStock: true
-        },
-        {
-            id: 9,
-            name: "Portable Speaker",
-            price: 49.99,
-            originalPrice: 79.99,
-            rating: 4.4,
-            reviews: 512,
-            image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500",
-            category: "Electronics",
-            badge: "40% OFF",
-            inStock: true
-        },
-        {
-            id: 10,
-            name: "Leather Wallet",
-            price: 39.99,
-            rating: 4.6,
-            reviews: 167,
-            image: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500",
-            category: "Fashion",
-            inStock: true
-        },
-        {
-            id: 11,
-            name: "Desk Lamp LED",
-            price: 45.99,
-            rating: 4.5,
-            reviews: 234,
-            image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500",
-            category: "Home",
-            badge: "Eco-Friendly",
-            inStock: true
-        },
-        {
-            id: 12,
-            name: "Fitness Tracker Band",
-            price: 69.99,
-            originalPrice: 99.99,
-            rating: 4.3,
-            reviews: 445,
-            image: "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=500",
-            category: "Electronics",
-            badge: "30% OFF",
-            inStock: true
-        }
-    ];
+ interface Props {
+    products: Product[]
+ }
+
+export const ProductsGrid = ({ products }: Props) => { 
 
     const renderStars = (rating: number) => {
         const stars = [];
@@ -247,14 +104,7 @@ export const ProductGrid = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                     </svg>
                                 </button>
-                            </div>
-
-                            {/* Out of Stock Overlay */}
-                            {!product.inStock && (
-                                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                                    <span className="text-white font-bold text-lg">Out of Stock</span>
-                                </div>
-                            )}
+                            </div> 
                         </div>
 
                         {/* Product Info */}
@@ -284,14 +134,14 @@ export const ProductGrid = () => {
 
                             {/* Add to Cart Button */}
                             <button 
-                                disabled={!product.inStock}
+                                disabled={!product.stock}
                                 className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
-                                    product.inStock
+                                    product.stock
                                         ? 'bg-blue-600 text-white hover:bg-blue-700'
                                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                 }`}
                             >
-                                {product.inStock ? (
+                                {product.stock ? (
                                     <span className="flex items-center justify-center gap-2">
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
