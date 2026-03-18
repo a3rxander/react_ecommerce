@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Link, useParams } from "react-router"
 
 export const Header = () => {
+
+    
+  const { categoryId } = useParams();
+  
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,19 +22,40 @@ export const Header = () => {
                     </div>
 
                     {/* Navigation Menu */}
-                    <nav className="hidden md:flex items-center space-x-1">
-                        <a
-                            href="/"
-                            className="px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                    <nav className="hidden md:flex items-center space-x-4">
+                        <Link 
+                            to="/"
+                            className={cn(`px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors`,
+                                !categoryId && "bg-slate-100 text-slate-900"
+                            )}
                         >
                             Inicio
-                        </a>
-                        <a
-                            href="/category"
-                            className="px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                        </Link> 
+                        <Link 
+                            to="/category/books"
+                            className={cn(`px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors`,
+                                categoryId === "books" && "bg-slate-100 text-slate-900"
+                            )}
                         >
-                            Categorías
-                        </a>
+                            Libros
+                        </Link>
+                        <Link 
+                            to="/category/electronics"
+                            className={cn(`px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors`,
+                                categoryId === "electronics" && "bg-slate-100 text-slate-900"
+                            )}       
+                    >
+                            Electrónica
+                        </Link>
+                        <Link
+                            to="/category/clothing"
+                            className={cn(`px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors`,
+                                categoryId === "clothing" && "bg-slate-100 text-slate-900"
+                            )}
+
+                        >
+                            Ropa
+                        </Link> 
                     </nav>
 
                     {/* Right Section - Cart & Logout */}

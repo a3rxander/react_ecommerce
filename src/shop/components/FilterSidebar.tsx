@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import type { Category} from '@/mocks/categories.mock' 
 
@@ -11,6 +11,15 @@ export const FilterSidebar = ({ categories }: Props) => {
 
     const [searchParams, setSearchParams] = useSearchParams();
 
+    //search product
+
+    const searchInput = useRef<HTMLInputElement>(null);
+    const handleSearch = ( event: React.KeyboardEvent<HTMLInputElement>) => { 
+        if(event.key === 'Enter' && searchInput.current) {
+            setSearchParams({ search: searchInput.current.value, page: "1" });
+        } 
+    }
+
     const  currentCategories = searchParams.get('category')?.split(',') || [];//Electronic, Clothing, Home 
 
     const handleCategoryToggle = (category: string) => {
@@ -20,6 +29,7 @@ export const FilterSidebar = ({ categories }: Props) => {
             : [...currentCategories, category];
         setSearchParams({ category: updatedCategories.join(','), page: "1" }); 
     }; 
+    
     
     const currentMinPrice = searchParams.get('minprice') || '0';
     const currentMaxPrice = searchParams.get('maxprice') || '1000';
@@ -47,6 +57,32 @@ export const FilterSidebar = ({ categories }: Props) => {
                 >
                     Clear All
                 </button>
+            </div>
+
+            {/* Search */}
+            <div className="mb-6">
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder="Search products..."
+                        className="w-full px-4 py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        ref={searchInput}
+                        onKeyDown={handleSearch}
+                    />
+                    <svg 
+                        className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth={2} 
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+                        />
+                    </svg>
+                </div>
             </div>
 
             {/* Categories */}
