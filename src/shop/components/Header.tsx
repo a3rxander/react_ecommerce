@@ -1,11 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Link, useParams } from "react-router"
+import { Link, useParams, useNavigate } from "react-router"
+import { useState } from "react";
 
 export const Header = () => {
-
-    
   const { categoryId } = useParams();
+  const navigate = useNavigate();
+  
+  // TODO: Replace with actual auth context
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [cartItemsCount] = useState(3);
+
+  const handleAuthAction = () => {
+    if (isAuthenticated) {
+      // Logout logic
+      setIsAuthenticated(false);
+      // Add your logout logic here (clear tokens, etc.)
+    } else {
+      // Navigate to login
+      navigate('/auth/login');
+    }
+  };
+
+  const handleCartClick = () => {
+    // TODO: Navigate to cart page or open cart modal
+    navigate('/cart');
+  };
   
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
@@ -58,17 +78,19 @@ export const Header = () => {
                         </Link> 
                     </nav>
 
-                    {/* Right Section - Cart & Logout */}
-                    <div className="flex items-center space-x-2">
+                    {/* Right Section - Cart & Auth */}
+                    <div className="flex items-center space-x-3">
                         {/* Cart Button */}
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="relative"
+                            className="relative hover:bg-blue-50 transition-colors"
+                            onClick={handleCartClick}
+                            title="Ver carrito"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
+                                className="h-5 w-5 text-slate-700"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -80,34 +102,64 @@ export const Header = () => {
                                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                                 />
                             </svg>
-                            <span className="ml-2 hidden sm:inline">Carrito</span>
-                            {/* Badge */}
-                            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
-                                3
-                            </span>
+                            <span className="ml-2 hidden sm:inline font-medium">Carrito</span>
+                            {/* Badge - only show if cart has items */}
+                            {cartItemsCount > 0 && (
+                                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md animate-in fade-in zoom-in duration-200">
+                                    {cartItemsCount}
+                                </span>
+                            )}
                         </Button>
 
-                        {/* Logout Button */}
+                        {/* Login/Logout Button */}
                         <Button
-                            variant="outline"
+                            variant={isAuthenticated ? "outline" : "default"}
                             size="sm"
-                            className="border-slate-300"
+                            className={cn(
+                                "font-medium transition-all",
+                                isAuthenticated 
+                                    ? "border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-400" 
+                                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                            )}
+                            onClick={handleAuthAction}
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-4 w-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                                />
-                            </svg>
-                            <span className="ml-2 hidden sm:inline">Salir</span>
+                            {isAuthenticated ? (
+                                <>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-4 w-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                        />
+                                    </svg>
+                                    <span className="ml-2 hidden sm:inline">Salir</span>
+                                </>
+                            ) : (
+                                <>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-4 w-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                                        />
+                                    </svg>
+                                    <span className="ml-2 hidden sm:inline">Ingresar</span>
+                                </>
+                            )}
                         </Button>
                     </div>
 
