@@ -3,8 +3,12 @@ import { FilterSidebar } from "../../components/FilterSidebar";
 import { ProductsGrid } from "../../components/ProductsGrid"; 
  import  { products } from '@/mocks/products.mock'
  import { categories } from "@/mocks/categories.mock";
+import { useProducts } from "@/shop/hooks/useProducts";
 
 export const HomePage = () => {
+
+  const { data} = useProducts();
+  
   return (
     <div className="flex gap-6">  
       <FilterSidebar categories={categories} />
