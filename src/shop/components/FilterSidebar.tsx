@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import {  useState } from 'react';
 import { useSearchParams } from 'react-router';
 import type { Category} from '@/mocks/categories.mock' 
 
@@ -13,10 +13,12 @@ export const FilterSidebar = ({ categories }: Props) => {
 
     //search product
 
-    const searchInput = useRef<HTMLInputElement>(null);
+    const [search, setSearch] = useState(searchParams.get('q') || '');
     const handleSearch = ( event: React.KeyboardEvent<HTMLInputElement>) => { 
-        if(event.key === 'Enter' && searchInput.current) {
-            setSearchParams({ search: searchInput.current.value, page: "1" });
+        if(event.key === 'Enter') {
+            searchParams.set('q', search);
+            searchParams.set('page', '1'); 
+            setSearchParams(searchParams);
         } 
     }
 
@@ -27,22 +29,37 @@ export const FilterSidebar = ({ categories }: Props) => {
         const updatedCategories = currentCategories.includes(category)
             ? currentCategories.filter(c => c !== category)
             : [...currentCategories, category];
-        setSearchParams({ category: updatedCategories.join(','), page: "1" }); 
+        searchParams.set('category', updatedCategories.join(','));
+        searchParams.set('page', '1');
+        setSearchParams(searchParams);
     }; 
     
     
-    const currentMinPrice = searchParams.get('minprice') || '0';
-    const currentMaxPrice = searchParams.get('maxprice') || '1000';
-    const [priceRange, setPriceRange] = useState<[number, number]>([Number(currentMinPrice), Number(currentMaxPrice)]); 
-    
-    const handlePriceChange = (min: number, max: number) => {
-        setPriceRange([min, max]);
-        setSearchParams({ minprice: String(min), maxprice: String(max), page: "1" }); 
+    const currentMinPrice = Number(searchParams.get('minprice') || '0');
+    const currentMaxPriceParam = searchParams.get('maxprice');
+    const currentMaxPrice = currentMaxPriceParam ? Number(currentMaxPriceParam) : undefined;
+
+    const priceRanges = [
+        { label: '$0 - $50', min: 0, max: 50 },
+        { label: '$50 - $100', min: 50, max: 100 },
+        { label: '$100 - $150', min: 100, max: 150 },
+        { label: '$150 - $500', min: 150, max: 500 },
+        { label: '$500+', min: 500 , max: undefined },
+    ];
+
+    const handlePriceChange = (min: number, max?: number) => {
+        searchParams.set('minprice', String(min));
+        if (max !== undefined) { 
+            searchParams.set('maxprice', String(max));
+        } else {
+            searchParams.delete('maxprice');
+        }
+
+        setSearchParams(searchParams);
     }
   
 
     const clearAllFilters = () => { 
-        setPriceRange([0, 1000]); 
         setSearchParams({ page: "1" }); 
     };
 
@@ -66,7 +83,8 @@ export const FilterSidebar = ({ categories }: Props) => {
                         type="text"
                         placeholder="Search products..."
                         className="w-full px-4 py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        ref={searchInput}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={handleSearch}
                     />
                     <svg 
@@ -107,35 +125,24 @@ export const FilterSidebar = ({ categories }: Props) => {
             <div className="mb-8">
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">Price Range</h3>
                 <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="number" 
-                            value={priceRange[0]}
-                            onChange={(e) => handlePriceChange(Number(e.target.value), priceRange[1])}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                            placeholder="Min"
-                        />
-                        <span className="text-gray-500">-</span>
-                        <input
-                            type="number" 
-                            value={priceRange[1]}
-                            onChange={(e) => handlePriceChange(priceRange[0], Number(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                            placeholder="Max"
-                        />
-                    </div>
-                    <input
-                        type="range"
-                        min="0"
-                        max="5000"
-                        value={priceRange[1]}
-                        onChange={(e) => handlePriceChange(priceRange[0], Number(e.target.value))}
-                        className="w-full"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500">
-                        <span>${priceRange[0]}</span>
-                        <span>${priceRange[1]}</span>
-                    </div>
+                    {priceRanges.map((range) => {
+                        const isActive = currentMinPrice === range.min && currentMaxPrice === range.max;
+
+                        return (
+                            <button
+                                key={range.label}
+                                type="button"
+                                onClick={() => handlePriceChange(range.min, range.max)}
+                                className={`w-full text-left px-3 py-2 rounded-md border text-sm transition-colors ${
+                                    isActive
+                                        ? 'bg-blue-600 text-white border-blue-600'
+                                        : 'bg-white text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-300'
+                                }`}
+                            >
+                                {range.label}
+                            </button>
+                        );
+                    })}
                 </div>
             </div> 
         </div>

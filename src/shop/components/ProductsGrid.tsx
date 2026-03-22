@@ -1,51 +1,13 @@
 
- import type {Product} from '@/mocks/products.mock'
-
+ import type {Product} from '@/types/product.types';
  interface Props {
     products: Product[]
  }
 
-export const ProductsGrid = ({ products }: Props) => { 
-
-    const renderStars = (rating: number) => {
-        const stars = [];
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 !== 0;
-
-        for (let i = 0; i < fullStars; i++) {
-            stars.push(
-                <svg key={`full-${i}`} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                </svg>
-            );
-        }
-
-        if (hasHalfStar) {
-            stars.push(
-                <svg key="half" className="w-4 h-4 text-yellow-400" viewBox="0 0 20 20">
-                    <defs>
-                        <linearGradient id="half-fill">
-                            <stop offset="50%" stopColor="currentColor" />
-                            <stop offset="50%" stopColor="#e5e7eb" />
-                        </linearGradient>
-                    </defs>
-                    <path fill="url(#half-fill)" d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                </svg>
-            );
-        }
-
-        const emptyStars = 5 - Math.ceil(rating);
-        for (let i = 0; i < emptyStars; i++) {
-            stars.push(
-                <svg key={`empty-${i}`} className="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20">
-                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                </svg>
-            );
-        }
-
-        return stars;
-    };
-
+export const ProductsGrid = ({ products }: Props) => {
+    
+    const baseUrl= import.meta.env.VITE_IMAGES_BASE_URL;
+ 
     return (
         <div className="flex-1 p-6">
             {/* Header */}
@@ -73,7 +35,7 @@ export const ProductsGrid = ({ products }: Props) => {
                         {/* Image Container */}
                         <div className="relative overflow-hidden bg-gray-100">
                             <img 
-                                src={product.image}
+                                src={product.primaryImage ? `${baseUrl}${product.primaryImage.imageUrl}` : '/placeholder.png'}
                                 alt={product.name}
                                 className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
                             />
@@ -109,16 +71,13 @@ export const ProductsGrid = ({ products }: Props) => {
 
                         {/* Product Info */}
                         <div className="p-4">
-                            <div className="text-xs text-gray-500 mb-1">{product.category}</div>
+                            <div className="text-xs text-gray-500 mb-1">{product.category?.name}</div>
                             <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2 h-10">
                                 {product.name}
                             </h3>
 
                             {/* Rating */}
-                            <div className="flex items-center gap-1 mb-3">
-                                <div className="flex">{renderStars(product.rating)}</div>
-                                <span className="text-xs text-gray-600">({product.reviews})</span>
-                            </div>
+                             
 
                             {/* Price */}
                             <div className="flex items-center gap-2 mb-3">
@@ -131,7 +90,7 @@ export const ProductsGrid = ({ products }: Props) => {
                                     </span>
                                 )}
                             </div>
-
+                                
                             {/* Add to Cart Button */}
                             <button 
                                 disabled={!product.stock}

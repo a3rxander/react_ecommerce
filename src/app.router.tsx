@@ -24,7 +24,7 @@ export const AppRouter  = createBrowserRouter([
                 element: <HomePage />
             },
             {
-                path: "category/:categoryId",
+                path: "category/:categoryName",
                 element: <CategoryPage />
             },
             {

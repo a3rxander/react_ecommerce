@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from "react-router"
 import { useState } from "react";
 
 export const Header = () => {
-  const { categoryId } = useParams();
+  const { categoryName } = useParams();
   const navigate = useNavigate();
   
   // TODO: Replace with actual auth context
@@ -46,7 +46,7 @@ export const Header = () => {
                         <Link 
                             to="/"
                             className={cn(`px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors`,
-                                !categoryId && "bg-slate-100 text-slate-900"
+                                !categoryName && "bg-slate-100 text-slate-900"
                             )}
                         >
                             Inicio
@@ -54,7 +54,7 @@ export const Header = () => {
                         <Link 
                             to="/category/books"
                             className={cn(`px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors`,
-                                categoryId === "books" && "bg-slate-100 text-slate-900"
+                                categoryName === "books" && "bg-slate-100 text-slate-900"
                             )}
                         >
                             Libros
@@ -62,7 +62,7 @@ export const Header = () => {
                         <Link 
                             to="/category/electronics"
                             className={cn(`px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors`,
-                                categoryId === "electronics" && "bg-slate-100 text-slate-900"
+                                categoryName === "electronics" && "bg-slate-100 text-slate-900"
                             )}       
                     >
                             Electrónica
@@ -70,7 +70,7 @@ export const Header = () => {
                         <Link
                             to="/category/clothing"
                             className={cn(`px-4 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors`,
-                                categoryId === "clothing" && "bg-slate-100 text-slate-900"
+                                categoryName === "clothing" && "bg-slate-100 text-slate-900"
                             )}
 
                         >
