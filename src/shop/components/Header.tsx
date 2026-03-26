@@ -2,25 +2,16 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link, useParams, useNavigate } from "react-router"
 import { useState } from "react";
+import { useAuthStore } from "@/auth/store/auth.store";
 
 export const Header = () => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
   
   // TODO: Replace with actual auth context
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, handleLogout } = useAuthStore();
   const [cartItemsCount] = useState(3);
-
-  const handleAuthAction = () => {
-    if (isAuthenticated) {
-      // Logout logic
-      setIsAuthenticated(false);
-      // Add your logout logic here (clear tokens, etc.)
-    } else {
-      // Navigate to login
-      navigate('/auth/login');
-    }
-  };
+ 
 
   const handleCartClick = () => {
     // TODO: Navigate to cart page or open cart modal
@@ -121,8 +112,8 @@ export const Header = () => {
                                     ? "border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-400" 
                                     : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                             )}
-                            onClick={handleAuthAction}
-                        >
+                            onClick={isAuthenticated ? handleLogout : () => navigate('/auth/login')}
+                        >   
                             {isAuthenticated ? (
                                 <>
                                     <svg

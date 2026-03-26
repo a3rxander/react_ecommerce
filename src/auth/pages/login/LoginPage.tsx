@@ -1,8 +1,39 @@
+import { loginAction } from "@/auth/actions/login.action";
+import { useState } from "react";
+import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Lock, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner"; 
+import { useAuthStore } from "@/auth/store/auth.store";
 
 export const LoginPage = () => {
+
+        const navigate = useNavigate();
+        const {handleLogin} = useAuthStore();
+        const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsLoading(true);
+         
+        const formData = new FormData(event.currentTarget);
+        const username = formData.get('username') as string;
+        const password = formData.get('password') as string;
+        const isSuccess = await handleLogin(username, password);
+
+        if(isSuccess) {
+            toast.success('¡Inicio de sesión exitoso!');
+            navigate('/');
+            return
+        } else {
+            toast.error('Error al iniciar sesión. Por favor, verifica tus credenciales e intenta nuevamente.');
+            setIsLoading(false);
+        }
+ 
+    };
+
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -16,21 +47,22 @@ export const LoginPage = () => {
             </div>
 
             {/* Form */}
-            <form className="space-y-4">
-                {/* Email Input */}
+            <form className="space-y-4" onSubmit={handleSubmit}>
+                {/* name Input */}
                 <div className="space-y-2">
                     <label 
-                        htmlFor="email" 
+                        htmlFor="username" 
                         className="text-sm font-medium text-foreground"
                     >
-                        Correo Electrónico
+                        Usuario
                     </label>
                     <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                         <input
-                            id="email"
-                            type="email"
-                            placeholder="tu@correo.com"
+                            id="username"
+                            type="text"
+                            name="username"
+                            placeholder="tu_usuario"
                             className="w-full h-10 pl-10 pr-4 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-all"
                         />
                     </div>
@@ -48,6 +80,7 @@ export const LoginPage = () => {
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                         <input
                             id="password"
+                            name="password"
                             type="password"
                             placeholder="••••••••"
                             className="w-full h-10 pl-10 pr-12 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-all"
@@ -85,6 +118,7 @@ export const LoginPage = () => {
                     type="submit" 
                     className="w-full h-10"
                     size="lg"
+                    disabled={isLoading}
                 >
                     Iniciar Sesión
                 </Button>
