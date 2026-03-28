@@ -4,13 +4,16 @@ import { Link, useParams, useNavigate } from "react-router"
 import { useState } from "react";
 import { useAuthStore } from "@/auth/store/auth.store";
 
-export const Header = () => {
+export const HeaderShop = () => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
   
   // TODO: Replace with actual auth context
-  const { isAuthenticated, handleLogout } = useAuthStore();
+  const { isAuthenticated, isSeller, isAdmin, handleLogout } = useAuthStore();
   const [cartItemsCount] = useState(3);
+    const canAccessBackoffice = isAuthenticated && (isSeller || isAdmin);
+    const backofficePath = isAdmin ? '/admin/' : '/seller/';
+    const cartBadgeLabel = cartItemsCount > 99 ? '99+' : cartItemsCount;
  
 
   const handleCartClick = () => {
@@ -66,7 +69,15 @@ export const Header = () => {
 
                         >
                             Ropa
-                        </Link> 
+                        </Link>
+                        {canAccessBackoffice && (
+                            <Link
+                                to={backofficePath}
+                                className="ml-2 rounded-md border border-blue-100 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 transition-colors hover:border-blue-200 hover:bg-blue-100 hover:text-blue-800"
+                            >
+                                Administracion
+                            </Link>
+                        )}
                     </nav>
 
                     {/* Right Section - Cart & Auth */}
@@ -96,8 +107,8 @@ export const Header = () => {
                             <span className="ml-2 hidden sm:inline font-medium">Carrito</span>
                             {/* Badge - only show if cart has items */}
                             {cartItemsCount > 0 && (
-                                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md animate-in fade-in zoom-in duration-200">
-                                    {cartItemsCount}
+                                <span className="absolute right-0 top-0 z-10 flex h-5 min-w-5 -translate-y-1/3 translate-x-1/3 items-center justify-center rounded-full border-2 border-white bg-rose-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm">
+                                    {cartBadgeLabel}
                                 </span>
                             )}
                         </Button>

@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
 import { Footer } from "../components/Footer";
-import { Header } from "../components/Header";
+import { HeaderShop } from "../components/HeaderShop";
 
 export const ShopLayout = () => {
     return (
         <div>
-            <Header />
+            <HeaderShop />
             <Outlet />
             <Footer />
         </div>
