@@ -1,19 +1,35 @@
  
 import { useMyProduct } from "@/seller/hooks/useMyProduct"; 
-import {  Navigate } from "react-router-dom";
+import {  Navigate, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import type { CreateProduct } from "@/types/product.types"; 
 import { FormProductPage } from "./FormProductPage";
+import { toast } from "sonner";
 
 
 export const SellerProductPage = () => {
   const {productId } = useParams();  
+  const navigate = useNavigate();
+    
   const isCreating = productId === "new";
-  const { data: product, isError, isLoading } = useMyProduct(productId || '');
+  const { data: product, isError, isLoading, mutation  } = useMyProduct(productId || '');
  
  const handleSubmit = async (payload: CreateProduct) => {
-    console.log("Form payload:", payload);
-    // Aquí puedes agregar la lógica para enviar los datos al backend
+ 
+  await mutation.mutateAsync(payload, {
+    onSuccess: (data) => {
+      console.log("Producto creado/actualizado exitosamente:", data);
+      toast.success(`Producto ${isCreating ? "creado" : "actualizado"} exitosamente!`, {
+        position: "top-right",        duration: 3000,
+      });
+      navigate(`/seller/products/${data.id}`);  
+    },
+    onError: (error) => {
+      // Aquí puedes manejar el error, mostrar un mensaje de error, etc.
+      console.error("Error al crear/actualizar el producto:", error);
+      toast.error(`Error al ${isCreating ? "crear" : "actualizar"} el producto. Por favor, inténtalo de nuevo.`);
+    } 
+  });
   }
 
   if (isLoading) return <div>Cargando...</div>
@@ -27,12 +43,11 @@ export const SellerProductPage = () => {
   if (!product) {
     return <Navigate to="/seller/products" />;
   }
-
-  console.log("Product data:", product);
+ 
 
   return (
     <div className="space-y-6">
-      <FormProductPage product={product} isCreating={isCreating} onSubmit={handleSubmit} />
+      <FormProductPage product={product} isCreating={isCreating} onSubmit={handleSubmit}  isPending={mutation.isPending} />
     </div>
   );
 }

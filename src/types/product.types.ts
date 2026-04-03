@@ -12,10 +12,8 @@ export interface CreateProduct {
   id?: string;
   name: string;
   description: string;
-  price: number;
-  stock: number;
-  categoryId: string;  
-  images?: ProductImage[];
+  price: number; 
+  categoryId: string;   
 }
 
 

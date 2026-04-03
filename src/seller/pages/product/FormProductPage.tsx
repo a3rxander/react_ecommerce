@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button"; 
+import { Spinner } from "@/components/ui/spinner"
 import { ArrowLeft, Upload, X, Plus } from "lucide-react";
-import { Link, Navigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom"; 
 import type { CreateProduct } from "@/types/product.types";
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm } from "react-hook-form"
+import {useCategories} from "@/shared/hooks/useCategories"
 
 
 interface Props {
@@ -12,8 +13,9 @@ interface Props {
     onSubmit: (payload: CreateProduct) =>  Promise<void>;
 }
 
-export const FormProductPage = ({ product, isCreating, onSubmit }: Props) => { 
+export const FormProductPage = ({ product, isCreating, onSubmit, isPending }: Props) => { 
 
+  const { data: categories } = useCategories();
 const {
     register,
     handleSubmit, 
@@ -40,9 +42,11 @@ const {
             {isCreating ? "Completa la información del producto" : "Actualiza la información del producto"}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">Guardar como Borrador</Button>
-          <Button type="submit">Publicar Producto</Button>
+        <div className="flex gap-2"> 
+          <Button type="submit" disabled={isPending}
+          >Publicar Producto
+            {isPending && <Spinner className="ml-2" />}
+          </Button>
         </div>
       </div> 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -89,12 +93,12 @@ const {
             </div>
           </div>
 
-          {/* Pricing */}
+          {/* Pricing */} 
           <div className="rounded-lg border border-border bg-card p-6 space-y-4">
             <h2 className="text-lg font-semibold text-foreground">
               Precio e Inventario
             </h2>
-
+ 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label htmlFor="price" className="text-sm font-medium text-foreground">
@@ -118,11 +122,11 @@ const {
                 )}
               </div>
  
-            </div>
+            </div> 
 
+          { !isCreating && (
             <div className="grid gap-4 sm:grid-cols-2">
- 
-
+  
               <div className="space-y-2">
                 <label htmlFor="stock" className="text-sm font-medium text-foreground">
                   Stock Disponible *
@@ -136,7 +140,7 @@ const {
                   className="w-full h-10 px-4 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 />
               </div>
-            </div>
+            </div> )}
           </div>
 
           {/* Images */}
@@ -195,11 +199,12 @@ const {
                   { ...register("categoryId", { required: "La categoría es obligatoria" }) }
                   className="w-full h-10 px-4 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
-                  <option>Seleccionar categoría</option>
-                  <option>Electrónica</option>
-                  <option>Ropa</option>
-                  <option>Hogar</option>
-                  <option>Deportes</option>
+                  <option value="">Selecciona una categoría</option>
+                  {categories?.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
               </div>
  
