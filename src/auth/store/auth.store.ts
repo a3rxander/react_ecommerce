@@ -31,6 +31,7 @@ export const useAuthStore = create<AuthStore>()((set) => ({
                 const response = await loginAction(username, password); 
                 localStorage.setItem('token', response.token);
                 set({ user: response.user, token: response.token, isAuthenticated: true });
+                set({ isSeller: response.user.role === 'Seller', isAdmin: response.user.role === 'Admin' });
                 return true;
             } catch (error) {
                 console.error('Login failed:', error);

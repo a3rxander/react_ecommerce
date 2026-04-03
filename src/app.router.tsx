@@ -9,6 +9,7 @@ import { RegisterPage } from "./auth/pages/register/RegisterPage"
 import { SellerDashboardPage } from "./seller/pages/dashboard/SellerDashboardPage"
 import { SellerProductsPage } from "./seller/pages/products/SellerProductsPage"
 import { SellerProductPage } from "./seller/pages/product/SellerProductPage"
+import { SellerRouteProtected } from "./seller/components/SellerRouteProtected"
 
 const AuthLayout = lazy(() => import("./auth/layouts/AuthLayout"));
 const SellerLayout = lazy(() => import("./seller/layouts/SellerLayout"));
@@ -55,7 +56,7 @@ export const AppRouter  = createBrowserRouter([
     //seller routes
     {
         path: "/seller",
-        element: <SellerLayout />,
+        element: <SellerRouteProtected><SellerLayout /></SellerRouteProtected>,
         children: [
             {
                 index: true,
@@ -64,7 +65,7 @@ export const AppRouter  = createBrowserRouter([
             {
                 path:"products",
                 element: <SellerProductsPage />
-            },
+            }, 
             {
                 path:"products/:productId",
                 element: <SellerProductPage />
