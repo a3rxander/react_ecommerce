@@ -8,6 +8,17 @@ export interface ProductImage {
   updatedAt: string;
 }
 
+export interface CreateProduct {  
+  id?: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  categoryId: string;  
+  images?: ProductImage[];
+}
+
+
 
 export interface Product { 
   id: string;

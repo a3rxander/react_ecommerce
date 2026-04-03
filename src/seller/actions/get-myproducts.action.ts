@@ -1,12 +1,12 @@
 import { backendApi } from "@/api/backendApi";
-import type{  ProductResponse } from "@/types/product.types";
+import type{  Product } from "@/types/product.types";
 
  
 
 export const getMyProductsAction = async (  ) => 
 {
     try {
-         const response = await backendApi.get<ProductResponse>('/v1/Products/me'); 
+         const response = await backendApi.get<Product>('/v1/Products/me'); 
         return response.data;
 
     } catch (error) {
