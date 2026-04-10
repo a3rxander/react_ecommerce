@@ -11,6 +11,7 @@ interface Props {
     product: CreateProduct;
     isCreating: boolean;
     onSubmit: (payload: CreateProduct) =>  Promise<void>;
+    isPending: boolean;
 }
 
 export const FormProductPage = ({ product, isCreating, onSubmit, isPending }: Props) => { 
@@ -20,7 +21,7 @@ const {
     register,
     handleSubmit, 
     formState: { errors },
-  } = useForm({
+  } = useForm<CreateProduct>({
     defaultValues: product})  
 
   return (
@@ -109,7 +110,11 @@ const {
                     $
                   </span>
                   <input 
-                  {...register("price", { required: "El precio es obligatorio", min: { value: 0.01, message: "El precio debe ser mayor a 0" } }) }
+                  {...register("price", {
+                    valueAsNumber: true,
+                    required: "El precio es obligatorio",
+                    min: { value: 0.01, message: "El precio debe ser mayor a 0" }
+                  }) }
                     placeholder="0.00"
                     className="w-full h-10 pl-7 pr-4 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                     
@@ -134,7 +139,11 @@ const {
                 <input
                   id="stock"
                   type="number"
-                  {...register("stock", { required: "El stock disponible es obligatorio", min: { value: 0, message: "El stock no puede ser negativo" } }) }
+                  {...register("stock", {
+                    valueAsNumber: true,
+                    required: "El stock disponible es obligatorio",
+                    min: { value: 0, message: "El stock no puede ser negativo" }
+                  }) }
                    
                   placeholder="0"
                   className="w-full h-10 px-4 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"

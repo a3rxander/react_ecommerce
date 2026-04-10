@@ -13,7 +13,9 @@ export interface CreateProduct {
   name: string;
   description: string;
   price: number; 
-  categoryId: string;   
+  stock?: number;
+  categoryId: string;
+  images?: ProductImage[];
 }
 
 
@@ -29,6 +31,9 @@ export interface Product {
   sellerId: string;
   sellerName: string;
   primaryImage: ProductImage | null;
+  images?: ProductImage[];
+  badge?: string;
+  originalPrice?: number;
   createdAt: string;
   updatedAt: string; 
 }
